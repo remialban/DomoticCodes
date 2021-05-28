@@ -131,6 +131,7 @@ def consommation():
 
 options = webdriver.ChromeOptions()
 options.add_argument('headless')
+options.add_argument('--no-sandbox')
 driver = webdriver.Chrome("/usr/lib/chromium-browser/chromedriver",options=options)
 driver.get("http://192.168.0.3/index1.htm")
 sleep(2)
@@ -146,7 +147,7 @@ def ipxv3():
 				client.publish("ipxv3/etat-sortie-" + str(i+1), "0")
 			else:
 				etats_sorties_ipxv3[i] = True
-			  client.publish("ipxv3/etat-sortie-"+str(i+1),"1")
+				client.publish("ipxv3/etat-sortie-"+str(i+1),"1")
 
 			
 ipxv3_thread = Thread(target=ipxv3)
