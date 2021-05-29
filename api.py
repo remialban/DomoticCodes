@@ -7,6 +7,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 import paho.mqtt.client as mqtt_client
+from requests import get
+from re import match
 
 app = Flask(__name__)
 
@@ -129,6 +131,24 @@ def consommation():
         
         return liste[-1]
 
+def on_message(client, userdata, message):
+	topic = message.topic
+	data = str(message.payload.decode("utf-8"))
+	
+	if match("^ipxv3/action-sortie-[1-8]$", topic):
+		if data == "command":
+			get("http://192.168.0.3/leds.cgi?led=" + str(int(topic[-1])-1))
+		elif data == "on":
+			get("http://192.168.0.3/preset.htm?set" + topic[-1] + "=1")
+		elif data == "off":
+			get("http://192.168.0.3/preset.htm?set" + topic[-1] + "=0")
+
+client = mqtt_client.Client()
+client.connect(host="127.0.0.1",port=1883,keepalive=45)
+client.subscribe("ipxv3/#")
+client.on_message = on_message
+client.loop_start()
+
 options = webdriver.ChromeOptions()
 options.add_argument('headless')
 options.add_argument('--no-sandbox')
@@ -137,8 +157,6 @@ driver.get("http://192.168.0.3/index1.htm")
 sleep(2)
 def ipxv3():
 	etats_sorties_ipxv3 = [False for _ in range(8)]
-	client = mqtt_client.Client()
-	client.connect(host="127.0.0.1",port=1883,keepalive=45)
 	while True:
 		for i in range(8):
 			element = driver.find_element_by_id("led"+str(i))
