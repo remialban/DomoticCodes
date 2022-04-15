@@ -6,10 +6,10 @@
 #define INPUT_UP D6
 #define INPUT_DOWN D7
 
-#define WIFI_SSID "RIVAYROLLE"
-#define WIFI_PASSWORD "81000albi"
+#define WIFI_SSID "<YOUR_WIFI_SSID>"
+#define WIFI_PASSWORD "<YOUR_WIFI_PASSWORD>"
 
-#define MQTT_SERVER "192.168.0.13"
+#define MQTT_SERVER "<YOUR_MQTT_BROKER>"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
