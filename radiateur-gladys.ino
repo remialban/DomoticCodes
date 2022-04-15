@@ -13,9 +13,9 @@ OneWire oneWire(PIN_TEMPERATURE);
 DallasTemperature sensors(&oneWire);
 
 // MQTT
-const char* WIFI_SSID = "RIVAYROLLE_EXT";
-const char* WIFI_PASSWORD = "81000albi";
-const char* MQTT_SERVER = "192.168.0.13";
+const char* WIFI_SSID = "<WIFI_SSID>";
+const char* WIFI_PASSWORD = "<WIFI_PASSWORD>";
+const char* MQTT_SERVER = "<MQTT_BROKER>";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
