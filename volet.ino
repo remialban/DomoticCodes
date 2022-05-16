@@ -9,7 +9,7 @@
 #define WIFI_SSID "<YOUR_WIFI_SSID>"
 #define WIFI_PASSWORD "<YOUR_WIFI_PASSWORD>"
 
-#define MQTT_SERVER "<YOUR_MQTT_BROKER>"
+#define MQTT_SERVER "<YOUR_MQTT_BROCKER>"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -24,6 +24,7 @@ void setup() {
   pinMode(OUTPUT_DOWN, OUTPUT);
   pinMode(INPUT_UP, INPUT_PULLUP);
   pinMode(INPUT_DOWN, INPUT_PULLUP);
+  stop_shutter();
 
   setup_wifi();
 
@@ -31,7 +32,6 @@ void setup() {
   client.setCallback(callback);
 
   lastStateButton = button_state();
-  stop_shutter();
 }
 
 void loop() {
@@ -59,28 +59,28 @@ void choose_action(String &command)
   } else if (command == "STOP") {
     stop_shutter();
   }
-    client.publish("volet-remi/info-action", state.c_str());
+    client.publish("volet-john/info-action", state.c_str());
 
 }
 
 void open_shutter()
 {
-  digitalWrite(OUTPUT_DOWN, LOW);
-  digitalWrite(OUTPUT_UP, HIGH);
+  digitalWrite(OUTPUT_DOWN, HIGH);
+  digitalWrite(OUTPUT_UP, LOW);
   state = "OPEN";
 }
 
 void close_shutter()
 {
-  digitalWrite(OUTPUT_UP, LOW);
-  digitalWrite(OUTPUT_DOWN, HIGH);
+  digitalWrite(OUTPUT_UP, HIGH);
+  digitalWrite(OUTPUT_DOWN, LOW);
   state = "CLOSE";
 }
 
 void stop_shutter()
 {
-  digitalWrite(OUTPUT_UP, LOW);
-  digitalWrite(OUTPUT_DOWN, LOW);
+  digitalWrite(OUTPUT_UP, HIGH);
+  digitalWrite(OUTPUT_DOWN, HIGH);
   state = "STOP";
 }
 
@@ -107,7 +107,7 @@ void setup_wifi() {
   Serial.println(WIFI_SSID);
 
   WiFi.mode(WIFI_STA);
-  WiFi.hostname("ESP-VOLET-REMI");
+  WiFi.hostname("ESP-VOLET-JOHN");
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -137,7 +137,7 @@ void callback(String topic, byte* message, unsigned int length) {
 
   Serial.println();
 
-  if (topic == "volet-remi/action")
+  if (topic == "volet-john/action")
   {
     choose_action(payload);
   }
@@ -148,12 +148,12 @@ void reconnect() {
   //while (!client.connected()) {
   Serial.print("Attempting MQTT connection...");
   // Create a random client ID
-  String clientId = "espvoletremi-";
+  String clientId = "espvoletjohn-";
   clientId += String(random(0xffff), HEX);
   // Attempt to connect
   if (client.connect(clientId.c_str())) {
     Serial.println("connected");
-    client.subscribe("volet-remi/action");
+    client.subscribe("volet-john/action");
   } else {
     Serial.print("failed, rc=");
     Serial.print(client.state());
